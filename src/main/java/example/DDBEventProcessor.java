@@ -64,6 +64,7 @@ public class DDBEventProcessor implements
 
         NetHttpTransport transport = GoogleNetHttpTransport.newTrustedTransport();
         JacksonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+        // TODO: credentials should be managed more securely
         Credential credential = new GoogleCredential.Builder()
                 .setServiceAccountId("lambda-bq@tt-dp-prod.iam.gserviceaccount.com")
                 .setServiceAccountPrivateKeyId("private-key-id")
@@ -81,10 +82,6 @@ public class DDBEventProcessor implements
         for (DynamodbStreamRecord record : ddbEvent.getRecords()){
             // get full record from ddb
             Map<String, AttributeValue> recordData = record.getDynamodb().getNewImage();
-            if (recordData == null) {
-                System.out.println("No records from DDB");
-                continue;
-            }
             // instantiate new bq record
             HashMap<String, Object> bqRecord = new HashMap<>();
             // populate bq record
